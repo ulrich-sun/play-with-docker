@@ -65,7 +65,7 @@ func ParseFlags() {
 	flag.StringVar(&CookieHashKey, "cookie-hash-key", "", "Hash key to use to validate cookies")
 	flag.StringVar(&CookieBlockKey, "cookie-block-key", "", "Block key to use to encrypt cookies")
 
-	flag.StringVar(&PlaygroundDomain, "playground-domain", "localhost", "Domain to use for the playground")
+	flag.StringVar(&PlaygroundDomain, "playground-domain", "34.245.90.193", "Domain to use for the playground")
 	flag.StringVar(&AdminToken, "admin-token", "", "Token to validate admin user for admin endpoints")
 
 	flag.StringVar(&SegmentId, "segment-id", "", "Segment id to post metrics")
