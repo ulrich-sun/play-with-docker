@@ -5,8 +5,9 @@
 echo "################## Install Started #####################"
 
 echo "Initialise Cluster"
+kubeadm config images pull 
 
-kubeadm init --apiserver-advertise-address $(hostname -i) --pod-network-cidr=10.244.0.0/16
+kubeadm init --apiserver-advertise-address $(hostname -i) --pod-network-cidr=10.244.0.0/16  --ignore-preflight-errors=all
 
 echo "Install Network Cluster"
 #kubectl apply -n kube-system -f \
