@@ -1,11 +1,19 @@
 FROM centos:7
 
+# Add for update OS
+RUN sed -i -e 's/mirror.centos.org/vault.centos.org/g' \
+           -e 's/^#.*baseurl=http/baseurl=http/g' \
+           -e 's/^mirrorlist=http/#mirrorlist=http/g' \
+           /etc/yum.repos.d/*.repo
+RUN yum update -y
+
+
 COPY ./systemctl /usr/bin/systemctl
 COPY ./kubernetes.repo /etc/yum.repos.d/
 
 
 
-RUN yum install -y kubectl-1.27.2 kubeadm-1.27.2 kubelet-1.27.2 \
+RUN yum install -y kubectl-1.31.0 kubeadm-1.31.0 kubelet-1.31.0 --disableexcludes=kubernetes \
     #&& mv -f /etc/systemd/system/kubelet.service.d/10-kubeadm.conf /etc/systemd/system/kubelet.service \
     && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \
     && yum install -y docker-ce git bash-completion \
@@ -26,6 +34,8 @@ COPY ./daemon.json /etc/docker/
 COPY ./resolv.conf.override /etc/
 COPY ./docker.service /usr/lib/systemd/system/
 COPY ./.bashrc /root/
+COPY ./deploy-k8s.sh /etc/kubernetes/
+RUN chmod +x /etc/kubernetes/deploy-k8s.sh
 
 COPY motd /etc/motd
 
@@ -41,4 +51,5 @@ WORKDIR /root
 CMD mount --make-shared / \
     && systemctl start docker \
 	&& systemctl start kubelet \
+    && /bin/bash /etc/kubernetes/deploy-k8s.sh \
     && while true; do script -q -c "/bin/bash -l" /dev/null; done
