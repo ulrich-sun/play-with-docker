@@ -6,7 +6,7 @@ on:
       - master  # Trigger the workflow on push to the master branch
   pull_request:
     branches:
-      - *  # Trigger the workflow on pull request to the master branch
+      - '**' # Trigger the workflow on pull request to the master branch
 
 jobs:
   build:
