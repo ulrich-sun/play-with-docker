@@ -7,14 +7,12 @@ services:
             - "80:8080"
         volumes:
             - ./haproxy:/usr/local/etc/haproxy
-        security_opt:
-            - apparmor=unconfined  # Désactive le profil AppArmor pour ce conteneur
 
     pwd:
         # pwd daemon container always needs to be named this way
         container_name: pwd
-        # use the latest ulrichsteve/pwd:stack image
-        image: ulrichsteve/pwd:stack
+        # use the latest golang image
+        image: golang
         # go to the right place and starts the app
         command: /bin/sh -c 'ssh-keygen -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key >/dev/null; cd /go/src/; if [ -e /runbin/pwd ]; then /runbin/pwd  -save /pwd/sessions -name l2; else go run api.go -save /pwd/sessions -name l2; fi'
         environment:
@@ -25,13 +23,10 @@ services:
             # mount the box mounted shared folder to the container
             - $PWD:/go/src
             - sessions:/pwd
-        security_opt:
-            - apparmor=unconfined  # Désactive le profil AppArmor pour ce conteneur
-
     l2:
         container_name: l2
-        # use the latest ulrichsteve/pwd:stack image
-        image: ulrichsteve/l2:stack
+        # use the latest golang image
+        image: golang
         # go to the right place and starts the app
         command: /bin/sh -c 'ssh-keygen -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key >/dev/null; cd /go/src/router/l2; if [ -e /runbin/l2 ]; then /runbin/l2 -ssh_key_path /etc/ssh/ssh_host_rsa_key -name l2 -save /pwd/networks; else go run l2.go -ssh_key_path /etc/ssh/ssh_host_rsa_key -name l2 -save /pwd/networks; fi'
         volumes:
@@ -42,9 +37,6 @@ services:
             - "8022:22"
             - "8053:53"
             - "443:443"
-        security_opt:
-            - apparmor=unconfined  # Désactive le profil AppArmor pour ce conteneur
-
 volumes:
     sessions:
     networks:
